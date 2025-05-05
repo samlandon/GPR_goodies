@@ -13,3 +13,9 @@
 #cylinder: 0.120 0.080 0 0.120 0.080 0.002 0.010 pec
 
 #geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 cylinder_half_space n
+
+
+To run paraview go in terminal while in gprMax env, and go to ~/Downloads/Paraview..../bin and then use command ./paraview to open it. open another terminal if want to keep using paraview, or close and reopen after changes have been made
+
+
+
