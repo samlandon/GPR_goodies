@@ -1,8 +1,9 @@
 #title: A-scan from a metal cylinder buried in a dielectric half-space
-#domain: 0.240 0.240 0.002
+#domain: 0.500 0.700 0.002
 domain: 0.240 0.210 0.002
-#dx_dy_dz: 0.002 0.002 0.002
-#time_window: 9e-9
+#dx_dy_dz: 0.003 0.003 0.003
+dx_dy_dz: 0.002 0.002 0.002
+#time_window: 20e-9
 (was 3ns)
 
 #material: 6 0 1 0 half_space
@@ -13,9 +14,10 @@ hertzian_dipole: z 0.100 0.170 0 my_ricker
 #rx: 0.140 0.190 0
 rx: 0.140 0.170 0
 
-#box: 0 0 0 0.240 0.170 0.002 half_space
-#cylinder: 0.120 0.050 0 0.120 0.050 0.002 0.010 pec
-cylinder: 0.120 0.050 0 0.120 0.050 0.002 0.010 pec (idk og chi bud)
+#box: 0 0 0 0.500 0.500 0.002 half_space
+box: 0 0 0 0.240 0.170 0.002 half_space
+#cylinder: 0.120 0.100 0 0.120 0.100 0.002 0.030 pec
+cylinder: 0.120 0.050 0 0.120 0.050 0.002 0.010 pec (forgot what original was)
 
 
 #geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 cylinder_half_space n
