@@ -24,7 +24,7 @@ In seconds of the sim^
 Makes a box of a specified material^
 
 /#sphere: 1.125 1.375 0.75 0.25 pec n
-#cylinder: 1.125 2.325 0.1 1.125 2.375 0.8 0.50 pec n
+#cylinder: 1.125 1.325 0.1 1.125 1.375 0.8 0.50 pec n
 /#cylinder: 1.125 2.325 0.1 1.125 2.375 0.8 0.50 wet_asphalt n
 Makes a sphere at ^ with radius of .25m of 
 a Perfect Electric Conductor and no dielectric smoothing
@@ -33,15 +33,18 @@ a Perfect Electric Conductor and no dielectric smoothing
 @@ EM Wave stuff @@
 #waveform: ricker 1 6e8 my_pulse
 
-#hertzian_dipole: z 3.375 1.375 0.75 my_pulse
+/#hertzian_dipole: z 3.375 1.375 0.75 my_pulse
+#hertzian_dipole: z 3.375 1.375 0.500 my_pulse
 ^ These make the pulse source and place it in the sim.
+^also more centered now in z axis as is the rx
 
-#rx: 3.375 1.075 0.75
+/#rx: 3.375 1.075 0.75
+#rx: 3.375 1.075 0.500
 /#rx: 3.375 1.075 0.75 Ex Ey Ez (only gives these parts, but still need to use --outputs Ez -fft for the graph and FFT)
 ^ Location of the receiver
 
 #geometry_view: 0 0 0 4 2 1 0.02 0.02 0.02 big_cyl_halfspace n
-
+^position, discretization, filename, and normal not fine so smaller filesize
 
 
 
