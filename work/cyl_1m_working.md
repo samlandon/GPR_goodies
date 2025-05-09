@@ -2,7 +2,8 @@
 
 
 @@ General Setup @@
-#domain: 4.0 2.0 1.0
+/#domain: 4.0 2.0 1.0
+#domain: new domain, come back
 This^ is the bounds of the sim in meters.
 
 #dx_dy_dz: 0.02 0.02 0.02
@@ -13,26 +14,28 @@ In seconds of the sim^
 
 
 @@ Materials @@
-/#material: 3 0.01 1 0 my_sand
-#material: 1 0 1 0 air 
+#material: 3 0.01 1 0 my_sand
+/#material: 1 0 1 0 air 
 /#material: 6 .10 1 0 wet_asphalt
 /#material: 6 0 1 0 half_space
 ^epsilon, conductivity, mu, magnetic loss, name
 
-/#box: 0 0 0 3 2 1 my_sand
-#box: 0 0 0 3 2 1 air
+#box: 0 0 0 3 2 1 my_sand
+/#box: 0 0 0 3 2 1 air
 Makes a box of a specified material^
 
 /#sphere: 1.125 1.375 0.75 0.25 pec n
 /#cylinder: 1.000 1.000 0.2 1.000 1.000 0.7 0.50 pec n
 ^this was totally 2m away, NOT 1m, which is why our reflection came in at 15 ns not 10 like it should at 1m!!!!
-#cylinder: 1.800 1.000 0.200 1.800 1.000 0.700 0.500 pec n
+/#cylinder: 1.800 1.000 0.200 1.800 1.000 0.700 0.500 pec n
 ^Cylinder centered with top and bottom coords and .5m radius, perfect electric conductor with
  no dielectric smoothing (not far enough out to need it or with resistive enough material to pass through)
+#cylinder: 2.250 1.000 0.200 2.250 1.000 0.700 0.050 pec n
+^clean spacing for 1/10 size at 5cm not 50
 /#cylinder: 1.125 2.325 0.1 1.125 2.375 0.8 0.50 wet_asphalt n
 Makes a sphere at ^ with radius of .25m of 
 a Perfect Electric Conductor and no dielectric smoothing
-
+^REMEMBER any time you change radius, reposition so still 1m away or chosen distance
 
 @@ EM Wave stuff @@
 #waveform: ricker 1 6e8 my_pulse
