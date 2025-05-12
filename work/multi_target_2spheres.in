@@ -15,15 +15,16 @@ In seconds of the sim^
 
 
 @@ Materials @@
-#material: 3 0.01 1 0 my_sand
-/#material: 1 0 1 0 air 
+/#material: 3 0.01 1 0 my_sand
+
+#material: 1 0 1 0 air 
 /#material: 6 .10 1 0 wet_asphalt
 /#material: 6 0 1 0 half_space
 ^epsilon, conductivity, mu, magnetic loss, name
 
 /#box: 0 0 0 3 2 1 my_sand
-/#box: 0 0 0 3 2 1 air
-#box: 0 0 0 2 2 1 my_sand
+#box: 0 0 0 3 2 1 air
+/#box: 0 0 0 2 2 1 my_sand
 ^adjusted smaller box
 Makes a box of a specified material^
 
@@ -44,9 +45,11 @@ a Perfect Electric Conductor and no dielectric smoothing
 
 
 @@ Multi-target attempt @@
-#sphere: 1.250 0.800 0.500 0.05 pec
-#sphere: 1.250 1.200 0.500 0.05 pec
-^5cm radius spheres
+/#sphere: 1.250 1.000 0.500 0.20 pec
+^centered for test
+#sphere: 1.250 0.800 0.500 0.20 pec
+#sphere: 1.250 1.200 0.500 0.20 pec
+^20cm radius spheres
 
 
 
@@ -75,7 +78,7 @@ a Perfect Electric Conductor and no dielectric smoothing
 ^ Location of the receiver
 
 /#geometry_view: 0 0 0 4 2 1 0.02 0.02 0.02 big_cyl_halfspace n
-#geometry_view: 0 0 0 3 2 1 0.02 0.02 0.02 smaller_box_cyl_1m_away n
+#geometry_view: 0 0 0 3 2 1 0.02 0.02 0.02 double_spheres n
 ^adjusted for new 1m smaller domain in x direc
 ^position, discretization, filename, and normal not fine so smaller filesize
 
