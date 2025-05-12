@@ -44,9 +44,9 @@ a Perfect Electric Conductor and no dielectric smoothing
 
 
 @@ Multi-target attempt @@
-#sphere: 1.250 0.800 0.500
-#sphere: 1.250 1.200 0.500
-
+#sphere: 1.250 0.800 0.500 0.05 pec
+#sphere: 1.250 1.200 0.500 0.05 pec
+^5cm radius spheres
 
 
 
