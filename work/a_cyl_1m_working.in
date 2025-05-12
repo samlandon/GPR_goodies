@@ -45,15 +45,26 @@ a Perfect Electric Conductor and no dielectric smoothing
 @@ EM Wave stuff @@
 #waveform: ricker 1 6e8 my_pulse
 
+/#python:
+/from user_libs.antennas.MALA import antenna_like_MALA_1200
+/antenna_like_MALA_1200(2.300, 1.000, 0.500, resolution=0.002)
+/#end_python:
+/^change this to MALA once working
+
+
 /#hertzian_dipole: z 3.375 1.375 0.75 my_pulse
 /#hertzian_dipole: z 3.300 1.150 0.500 my_pulse
-#hertzian_dipole: z 2.300 1.150 0.500 my_pulse
+
+#hertzian_dipole: z 2.300 1.150 0.500 my_pulse     
+/#hertzian_dipole: z 2.300 1.150 0.500 my_pulse      <<<<<<<<<<<use this when uncomment
 ^ These make the pulse source and place it in the sim.
 ^also more centered now in z axis as is the rx
 
 /#rx: 3.375 1.075 0.75
 /#rx: 3.300 0.850 0.500
-#rx: 2.300 0.850 0.500
+
+#rx: 2.300 0.850 0.500                               
+/#rx: 2.300 0.850 0.500                               <<<<<<<<<<<use this when uncomment
 ^moved back 1m along x to allow for smaller domain size and quicker runtime??
 /#rx: 3.375 1.075 0.75 Ex Ey Ez (only gives these parts, but still need to use --outputs Ez -fft for the graph and FFT)
 ^ Location of the receiver
