@@ -97,5 +97,8 @@ if __name__ == "__main__":
     for rx in range(1, nrx + 1):
         outputdata, dt = get_output_data(args.outputfile, rx, args.rx_component)
         plthandle = mpl_plot(args.outputfile, outputdata, dt, rx, args.rx_component)
+	#remember to remove this, but useful for debug
+	#print(f"outputdata shape: {outputdata.shape}")
+	#print(f"receiver number: {rx}, component: {args.rx_component}")
 
     plthandle.show()
