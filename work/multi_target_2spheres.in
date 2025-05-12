@@ -23,8 +23,10 @@ In seconds of the sim^
 ^epsilon, conductivity, mu, magnetic loss, name
 
 /#box: 0 0 0 3 2 1 my_sand
-#box: 0 0 0 3 2 1 air
+/#box: 0 0 0 3 2 1 air
+^for big box
 /#box: 0 0 0 2 2 1 my_sand
+#box: 0 0 0 3 2 1 air
 ^adjusted smaller box
 Makes a box of a specified material^
 
