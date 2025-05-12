@@ -1,7 +1,9 @@
 #title: B-scan from a metal cylinder buried in a dielectric half-space
+
 #domain: 0.240 0.210 0.002
 #dx_dy_dz: 0.002 0.002 0.002
-#time_window: 3e-9
+#time_window: 6e-9
+/#time_window: 3e-9
 
 #material: 6 0 1 0 half_space
 
@@ -11,5 +13,19 @@
 #src_steps: 0.002 0 0
 #rx_steps: 0.002 0 0
 
+
 #box: 0 0 0 0.240 0.170 0.002 half_space
 #cylinder: 0.120 0.080 0 0.120 0.080 0.002 0.010 pec
+
+
+
+/if this is on, when you run python -m tools.outputfiles_merge cylinder_Bscan_2D --remove-file, you still get left with all your .vti's
+/only use when visualizing on --geometry-only mode
+/#geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 bscan_cyl n
+
+
+
+To run -n 5 times and get the scan:
+python -m gprMax cylinder_Bscan_2D.in -n 50
+python -m tools.outputfiles_merge cylinder_Bscan_2D --remove-files
+python -m tools.plot_Bscan cylinder_Bscan_2D_merged.out Ez
