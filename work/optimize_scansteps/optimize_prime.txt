@@ -17,6 +17,29 @@ Max_step_size = Dist_from_end - Pos_initial
 
 
 
+&~
+Questions:
+	Can you just do 2 really big steps?
+	What is the difference between Multi and single Target Bscans?
+	What if you move the second target behind the first? If bigger in front? In back?
+	Need to change time window for longer travel? If yes, double, or just 1.5, etc?
+	Half_space/medium vs free space effects on Bscans?
+Answers:
+	No, too low resolution. Min iterations and steps ~= Dist_start_to_end/easy_#_steps_to_divide_up
+	Idk...
+	Idk...
+	Idk...
+	Idk...
+~&
+
+
+
+
+
+
+
+
+
 @@Note: Starts with multi-target results. Subject to change@@
 
 @@Smallest step with most iterations possible@@
@@ -223,4 +246,580 @@ python -m tools.plot_Bscan  goldilocks_1cm_merged.out Ez
 
 
 
+
+
+
+@@Stacked Targets??@@
+
+@@Max iterations, one cyl in front of other@@
+@Review: GRP can't see anything in back, because front blocks back, so only see one target!@
+#title: B-scan from a metal cylinder buried in a dielectric half-space
+
+#domain: 0.240 0.210 0.002
+#dx_dy_dz: 0.002 0.002 0.002
+#time_window: 6e-9
+/#time_window: 3e-9
+
+#material: 6 0 1 0 half_space
+^remember this is in half space!!!!!!! so slower vp
+
+
+
+
+#waveform: ricker 1 1.5e9 my_ricker
+#hertzian_dipole: z 0.040 0.170 0 my_ricker
+#rx: 0.080 0.170 0
+#src_steps: 0.002 0 0
+#rx_steps: 0.002 0 0
+/#rx_steps: 0.004 0 0
+^testing steps 2x as big with only 25 iterations (why are we doing 40 iterations though we doubled steps? Maybe try doing 30, since .24/.002=120 and we did 60 iters?!)
+/#rx_steps: 0.008 0 0
+/^2x as big again!!! do 20 iterations
+
+#box: 0 0 0 0.240 0.170 0.002 half_space
+#cylinder: 0.120 0.080 0 0.120 0.080 0.002 0.010 pec
+#cylinder: 0.120 0.110 0 0.120 0.110 0.002 0.010 pec
+^two cyls one behind the other!
+/#cylinder: 0.060 0.080 0 0.100 0.080 0.002 0.010 pec
+/#cylinder: 0.180 0.080 0 0.140 0.080 0.002 0.010 pec
+^if use bottom 2 together, use 40 scans over step of 0.004
+
+
+/if this is on, when you run python -m tools.outputfiles_merge cylinder_Bscan_2D --remove-file, you still get left with all your .vti's
+/only use when visualizing on --geometry-only mode
+/#geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 70_step_behind_other n
+
+
+To run -n 5 times and get the scan:
+python -m gprMax 70_steps_behind_target.in -n 70
+python -m tools.outputfiles_merge 70_steps_behind_target --remove-files
+python -m tools.plot_Bscan 70_steps_behind_target_merged.out Ez
+
+
+@@Stacked, 50 iter, farther apart@@
+@Review: still can't see backmost target. Not that important. If hit front pipe, already failed, won't hit back until front already toast!!!@
+#title: B-scan from a metal cylinder buried in a dielectric half-space
+
+#domain: 0.240 0.210 0.002
+#dx_dy_dz: 0.002 0.002 0.002
+#time_window: 6e-9
+/#time_window: 3e-9
+
+#material: 6 0 1 0 half_space
+^remember this is in half space!!!!!!! so slower vp
+
+#waveform: ricker 1 1.5e9 my_ricker
+#hertzian_dipole: z 0.040 0.170 0 my_ricker
+#rx: 0.080 0.170 0
+
+#src_steps: 0.002 0 0
+#rx_steps: 0.002 0 0
+/#rx_steps: 0.004 0 0
+^testing steps 2x as big with only 25 iterations (why are we doing 40 iterations though we doubled steps? Maybe try doing 30, since .24/.002=120 and we did 60 iters?!)
+/#rx_steps: 0.008 0 0
+/^2x as big again!!! do 20 iterations
+
+#box: 0 0 0 0.240 0.170 0.002 half_space
+#cylinder: 0.120 0.050 0 0.120 0.050 0.002 0.010 pec
+#cylinder: 0.120 0.130 0 0.120 0.130 0.002 0.010 pec
+^two cyls one behind the other!
+/#cylinder: 0.060 0.080 0 0.100 0.080 0.002 0.010 pec
+/#cylinder: 0.180 0.080 0 0.140 0.080 0.002 0.010 pec
+^if use bottom 2 together, use 40 scans over step of 0.004
+
+/if this is on, when you run python -m tools.outputfiles_merge cylinder_Bscan_2D --remove-file, you still get left with all your .vti's
+/only use when visualizing on --geometry-only mode
+/#geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 70_step_behind_other n
+
+To run -n 5 times and get the scan:
+python -m gprMax stacked_farther_apart.in -n 50
+python -m tools.outputfiles_merge stacked_farther_apart --remove-files
+python -m tools.plot_Bscan stacked_farther_apart_merged.out Ez
+
+
+
+
+
+
+@@@@SINGLE TARGET!!!!!!@@@@@
+
+@@Single cyl with max iterations.@@
+@Review: Very High-res single bow reflection.@
+"""
+Also runs on max iterations with smallest step size.
+"""
+#title: B-scan from a metal cylinder buried in a dielectric half-space
+
+#domain: 0.240 0.210 0.002
+#dx_dy_dz: 0.002 0.002 0.002
+#time_window: 6e-9
+/#time_window: 3e-9
+
+#material: 6 0 1 0 half_space
+^remember this is in half space!!!!!!! so slower vp
+
+#waveform: ricker 1 1.5e9 my_ricker
+#hertzian_dipole: z 0.040 0.170 0 my_ricker
+#rx: 0.080 0.170 0
+#src_steps: 0.002 0 0
+#rx_steps: 0.002 0 0
+/#rx_steps: 0.004 0 0
+^testing steps 2x as big with only 25 iterations (why are we doing 40 iterations though we doubled steps? Maybe try doing 30, since .24/.002=120 and we did 60 iters?!)
+/#rx_steps: 0.008 0 0
+/^2x as big again!!! do 20 iterations
+
+#box: 0 0 0 0.240 0.170 0.002 half_space
+#cylinder: 0.120 0.080 0 0.120 0.080 0.002 0.010 pec
+/#cylinder: 0.120 0.110 0 0.120 0.110 0.002 0.010 pec
+^two cyls one behind the other!
+/#cylinder: 0.060 0.080 0 0.100 0.080 0.002 0.010 pec
+/#cylinder: 0.180 0.080 0 0.140 0.080 0.002 0.010 pec
+^if use bottom 2 together, use 40 scans over step of 0.004
+
+/if this is on, when you run python -m tools.outputfiles_merge cylinder_Bscan_2D --remove-file, you still get left with all your .vti's
+/only use when visualizing on --geometry-only mode
+/#geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 70_step_behind_other n
+
+To run -n 5 times and get the scan:
+python -m gprMax single_target_70_iter.in -n 70
+python -m tools.outputfiles_merge single_target_70_iter --remove-files
+python -m tools.plot_Bscan single_target_70_iter_merged.out Ez
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+REALIZED I HAD THE CYLINDERS SIDEWAYS IN A WEIRD WAY, BUT NOW THEY ARE VERTICAL ONLY!!!!!!!!!!!! SMALLER RCS
+
+
+
+@@@@@@@@@All tests and their progress!!!!!@@@@@@@@@@@
+
+
+
+
+%*
+Equation for Max Iterations: 
+Iter = (Axis_length/Step_size - 10dx - Pos_initial)
+(dx = #steps = dx_dy_dz/Step_size)
+(Pos_initial = #steps = position_of_rx_or_src_which_is_farthest/Step_size)
+
+Equation for Max Step Size:   << not set in stone, yet
+Dist_from_end = Axis_length - Pos_initial
+Max_step_size = Dist_from_end - Pos_initial
+(grab total distance from start to same relative place from end and make it all one step)
+*%
+
+
+
+&~
+Questions:
+	Can you just do 2 really big steps?
+	What is the difference between Multi and single Target Bscans?
+	What if you move the second target behind the first? If bigger in front? In back?
+	Need to change time window for longer travel? If yes, double, or just 1.5, etc?
+	Half_space/medium vs free space effects on Bscans?
+Answers:
+	No, too low resolution. Min iterations and steps ~= Dist_start_to_end/easy_#_steps_to_divide_up
+	Idk...
+	Idk...
+	Idk...
+	Idk...
+~&
+
+
+
+
+
+
+
+
+
+@@Note: Starts with multi-target results. Subject to change@@
+
+@@Smallest step with most iterations possible@@
+@Review: Ran well at 70 and super high resolution, but unnecessarily so@
+#title: B-scan from a metal cylinder buried in a dielectric half-space
+
+#domain: 0.240 0.210 0.002
+#dx_dy_dz: 0.002 0.002 0.002
+#time_window: 6e-9
+/#time_window: 3e-9
+
+#material: 6 0 1 0 half_space
+^remember this is in half space!!!!!!! so slower vp
+
+
+
+
+#waveform: ricker 1 1.5e9 my_ricker
+#hertzian_dipole: z 0.040 0.170 0 my_ricker
+#rx: 0.080 0.170 0
+#src_steps: 0.002 0 0
+#rx_steps: 0.002 0 0
+/#rx_steps: 0.004 0 0
+^testing steps 2x as big with only 25 iterations (why are we doing 40 iterations though we doubled steps? Maybe try doing 30, since .24/.002=120 and we did 60 iters?!)
+/#rx_steps: 0.008 0 0
+/^2x as big again!!! do 20 iterations
+
+#box: 0 0 0 0.240 0.170 0.002 half_space
+/#cylinder: 0.120 0.080 0 0.120 0.080 0.002 0.010 pec
+#cylinder: 0.060 0.080 0 0.060 0.080 0.002 0.010 pec
+#cylinder: 0.180 0.080 0 0.180 0.080 0.002 0.010 pec
+^if use bottom 2 together, use 40 scans over step of 0.004
+
+
+/if this is on, when you run python -m tools.outputfiles_merge cylinder_Bscan_2D --remove-file, you still get left with all your .vti's
+/only use when visualizing on --geometry-only mode
+/#geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 multi_bscan n
+
+
+
+To run -n 5 times and get the scan:
+python -m gprMax max_steps_2mmstep.in -n 70
+python -m tools.outputfiles_merge max_steps_2mmstep remove-files
+python -m tools.plot_Bscan max_steps_2mmstep_merged.out Ez
+
+
+
+
+
+@@Max step size: only 2 steps@@
+@Review: DOES NOT WORK! Needs more than 2 steps, because just get straight, disjointed lines.@
+#title: B-scan from a metal cylinder buried in a dielectric half-space
+
+#domain: 0.240 0.210 0.002
+#dx_dy_dz: 0.002 0.002 0.002
+#time_window: 6e-9
+/#time_window: 3e-9
+
+#material: 6 0 1 0 half_space
+^remember this is in half space!!!!!!! so slower vp
+
+
+
+
+#waveform: ricker 1 1.5e9 my_ricker
+#hertzian_dipole: z 0.040 0.170 0 my_ricker
+#rx: 0.080 0.170 0
+/#src_steps: 0.002 0 0
+/#rx_steps: 0.002 0 0
+/#rx_steps: 0.004 0 0
+^testing steps 2x as big with only 25 iterations (why are we doing 40 iterations though we doubled steps? Maybe try doing 30, since .24/.002=120 and we did 60 iters?!)
+/#rx_steps: 0.008 0 0
+/^2x as big again!!! do 20 iterations
+#src_steps: 0.080 0 0
+#rx_steps: 0.080 0 0
+^biggest possible step size!!
+
+#box: 0 0 0 0.240 0.170 0.002 half_space
+/#cylinder: 0.120 0.080 0 0.120 0.080 0.002 0.010 pec
+#cylinder: 0.060 0.080 0 0.060 0.080 0.002 0.010 pec
+#cylinder: 0.180 0.080 0 0.180 0.080 0.002 0.010 pec
+^if use bottom 2 together, use 40 scans over step of 0.004
+
+
+/if this is on, when you run python -m tools.outputfiles_merge cylinder_Bscan_2D --remove-file, you still get left with all your .vti's
+/only use when visualizing on --geometry-only mode
+/#geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 multi_bscan n
+
+
+
+To run -n 5 times and get the scan:
+python -m gprMax max_step_size_8cm.in -n 2
+python -m tools.outputfiles_merge  max_step_size_8cm --remove-files
+python -m tools.plot_Bscan  max_step_size_8cm_merged.out Ez
+
+
+
+
+
+
+@@Finding Goldilocks step size and iteration amount@@
+@@Remember that Max iterations is too clean, but 40 worked well. Now try going up from lowest iterations@@
+
+@@Try 8 iterations? Evenly spaced steps@@
+@@Review: too few, and somehow only got half the box, not the right cylinder, but CAN see left cyl!!! If you look below at 16, it gets left and right!!!@@
+#title: B-scan from a metal cylinder buried in a dielectric half-space
+
+#domain: 0.240 0.210 0.002
+#dx_dy_dz: 0.002 0.002 0.002
+#time_window: 6e-9
+/#time_window: 3e-9
+
+#material: 6 0 1 0 half_space
+^remember this is in half space!!!!!!! so slower vp
+
+#waveform: ricker 1 1.5e9 my_ricker
+#hertzian_dipole: z 0.040 0.170 0 my_ricker
+#rx: 0.080 0.170 0
+
+/#src_steps: 0.002 0 0
+/#rx_steps: 0.002 0 0
+/#rx_steps: 0.004 0 0
+^testing steps 2x as big with only 25 iterations (why are we doing 40 iterations though we doubled steps? Maybe try doing 30, since .24/.002=120 and we did 60 iters?!)
+/#rx_steps: 0.008 0 0
+/^2x as big again!!! do 20 iterations
+//#src_steps: 0.080 0 0
+//#rx_steps: 0.080 0 0
+^biggest possible step size!!
+#src_steps: 0.010 0 0
+#rx_steps: 0.010 0 0
+^trying 8 steps
+
+#box: 0 0 0 0.240 0.170 0.002 half_space
+/#cylinder: 0.120 0.080 0 0.120 0.080 0.002 0.010 pec
+#cylinder: 0.060 0.080 0 0.060 0.080 0.002 0.010 pec
+#cylinder: 0.180 0.080 0 0.180 0.080 0.002 0.010 pec
+^if use bottom 2 together, use 40 scans over step of 0.004
+
+
+/if this is on, when you run python -m tools.outputfiles_merge cylinder_Bscan_2D --remove-file, you still get left with all your .vti's
+/only use when visualizing on --geometry-only mode
+/#geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 multi_bscan n
+
+To run -n 5 times and get the scan:
+python -m gprMax goldilocks_1cm.in -n 8
+python -m tools.outputfiles_merge goldilocks_1cm --remove-files
+python -m tools.plot_Bscan  goldilocks_1cm_merged.out Ez
+
+
+
+
+
+
+@@Same as above, but now with 16 instead of 8 iterations, and it seems to be the bare minimum!!!!@@
+#title: B-scan from a metal cylinder buried in a dielectric half-space
+
+#domain: 0.240 0.210 0.002
+#dx_dy_dz: 0.002 0.002 0.002
+#time_window: 6e-9
+/#time_window: 3e-9
+
+#material: 6 0 1 0 half_space
+^remember this is in half space!!!!!!! so slower vp
+
+%wave%
+#waveform: ricker 1 1.5e9 my_ricker
+#hertzian_dipole: z 0.040 0.170 0 my_ricker
+#rx: 0.080 0.170 0
+
+%steps%
+/#src_steps: 0.002 0 0
+/#rx_steps: 0.002 0 0
+/#rx_steps: 0.004 0 0
+^testing steps 2x as big with only 25 iterations (why are we doing 40 iterations though we doubled steps? Maybe try doing 30, since .24/.002=120 and we did 60 iters?!)
+/#rx_steps: 0.008 0 0
+/^2x as big again!!! do 20 iterations
+//#src_steps: 0.080 0 0
+//#rx_steps: 0.080 0 0
+^biggest possible step size!!
+#src_steps: 0.010 0 0
+#rx_steps: 0.010 0 0
+^trying 8 steps
+
+%shapes%
+#box: 0 0 0 0.240 0.170 0.002 half_space
+/#cylinder: 0.120 0.080 0 0.120 0.080 0.002 0.010 pec
+#cylinder: 0.060 0.080 0 0.060 0.080 0.002 0.010 pec
+#cylinder: 0.180 0.080 0 0.180 0.080 0.002 0.010 pec
+^if use bottom 2 together, use 40 scans over step of 0.004
+
+/if this is on, when you run python -m tools.outputfiles_merge cylinder_Bscan_2D --remove-file, you still get left with all your .vti's
+/only use when visualizing on --geometry-only mode
+/#geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 multi_bscan n
+
+To run -n 5 times and get the scan:
+python -m gprMax goldilocks_1cm.in -n 16
+python -m tools.outputfiles_merge goldilocks_1cm --remove-files
+python -m tools.plot_Bscan  goldilocks_1cm_merged.out Ez
+
+
+
+
+@@@@Summary: seems like max is 70, and min is 16, but you can use the equations at the top to find these. Just remember for low-end, take 2, expand to something that divides nice
+-ly between the start and end positions, and then double that to cover the whole space!@@@@
+
+
+
+
+
+
+@@Stacked Targets??@@
+
+@@Max iterations, one cyl in front of other@@
+@Review: GRP can't see anything in back, because front blocks back, so only see one target!@
+#title: B-scan from a metal cylinder buried in a dielectric half-space
+
+#domain: 0.240 0.210 0.002
+#dx_dy_dz: 0.002 0.002 0.002
+#time_window: 6e-9
+/#time_window: 3e-9
+
+#material: 6 0 1 0 half_space
+^remember this is in half space!!!!!!! so slower vp
+
+
+
+
+#waveform: ricker 1 1.5e9 my_ricker
+#hertzian_dipole: z 0.040 0.170 0 my_ricker
+#rx: 0.080 0.170 0
+#src_steps: 0.002 0 0
+#rx_steps: 0.002 0 0
+/#rx_steps: 0.004 0 0
+^testing steps 2x as big with only 25 iterations (why are we doing 40 iterations though we doubled steps? Maybe try doing 30, since .24/.002=120 and we did 60 iters?!)
+/#rx_steps: 0.008 0 0
+/^2x as big again!!! do 20 iterations
+
+#box: 0 0 0 0.240 0.170 0.002 half_space
+#cylinder: 0.120 0.080 0 0.120 0.080 0.002 0.010 pec
+#cylinder: 0.120 0.110 0 0.120 0.110 0.002 0.010 pec
+^two cyls one behind the other!
+#cylinder: 0.060 0.080 0 0.060 0.080 0.002 0.010 pec
+#cylinder: 0.180 0.080 0 0.180 0.080 0.002 0.010 pec
+^if use bottom 2 together, use 40 scans over step of 0.004
+
+
+/if this is on, when you run python -m tools.outputfiles_merge cylinder_Bscan_2D --remove-file, you still get left with all your .vti's
+/only use when visualizing on --geometry-only mode
+/#geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 70_step_behind_other n
+
+
+To run -n 5 times and get the scan:
+python -m gprMax 70_steps_behind_target.in -n 70
+python -m tools.outputfiles_merge 70_steps_behind_target --remove-files
+python -m tools.plot_Bscan 70_steps_behind_target_merged.out Ez
+
+
+@@Stacked, 50 iter, farther apart@@
+@Review: still can't see backmost target. Not that important. If hit front pipe, already failed, won't hit back until front already toast!!!@
+#title: B-scan from a metal cylinder buried in a dielectric half-space
+
+#domain: 0.240 0.210 0.002
+#dx_dy_dz: 0.002 0.002 0.002
+#time_window: 6e-9
+/#time_window: 3e-9
+
+#material: 6 0 1 0 half_space
+^remember this is in half space!!!!!!! so slower vp
+
+#waveform: ricker 1 1.5e9 my_ricker
+#hertzian_dipole: z 0.040 0.170 0 my_ricker
+#rx: 0.080 0.170 0
+
+#src_steps: 0.002 0 0
+#rx_steps: 0.002 0 0
+/#rx_steps: 0.004 0 0
+^testing steps 2x as big with only 25 iterations (why are we doing 40 iterations though we doubled steps? Maybe try doing 30, since .24/.002=120 and we did 60 iters?!)
+/#rx_steps: 0.008 0 0
+/^2x as big again!!! do 20 iterations
+
+#box: 0 0 0 0.240 0.170 0.002 half_space
+#cylinder: 0.120 0.050 0 0.120 0.050 0.002 0.010 pec
+#cylinder: 0.120 0.130 0 0.120 0.130 0.002 0.010 pec
+^two cyls one behind the other!
+/#cylinder: 0.060 0.080 0 0.100 0.080 0.002 0.010 pec
+/#cylinder: 0.180 0.080 0 0.140 0.080 0.002 0.010 pec
+^if use bottom 2 together, use 40 scans over step of 0.004
+
+/if this is on, when you run python -m tools.outputfiles_merge cylinder_Bscan_2D --remove-file, you still get left with all your .vti's
+/only use when visualizing on --geometry-only mode
+/#geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 70_step_behind_other n
+
+To run -n 5 times and get the scan:
+python -m gprMax stacked_farther_apart.in -n 50
+python -m tools.outputfiles_merge stacked_farther_apart --remove-files
+python -m tools.plot_Bscan stacked_farther_apart_merged.out Ez
+
+
+
+
+
+
+@@@@SINGLE TARGET!!!!!!@@@@@
+
+@@Single cyl with max iterations.@@
+@Review: Very High-res single bow reflection.@
+"""
+Also runs on max iterations with smallest step size.
+"""
+#title: B-scan from a metal cylinder buried in a dielectric half-space
+
+#domain: 0.240 0.210 0.002
+#dx_dy_dz: 0.002 0.002 0.002
+#time_window: 6e-9
+/#time_window: 3e-9
+
+#material: 6 0 1 0 half_space
+^remember this is in half space!!!!!!! so slower vp
+
+#waveform: ricker 1 1.5e9 my_ricker
+#hertzian_dipole: z 0.040 0.170 0 my_ricker
+#rx: 0.080 0.170 0
+#src_steps: 0.002 0 0
+#rx_steps: 0.002 0 0
+/#rx_steps: 0.004 0 0
+^testing steps 2x as big with only 25 iterations (why are we doing 40 iterations though we doubled steps? Maybe try doing 30, since .24/.002=120 and we did 60 iters?!)
+/#rx_steps: 0.008 0 0
+/^2x as big again!!! do 20 iterations
+
+#box: 0 0 0 0.240 0.170 0.002 half_space
+#cylinder: 0.120 0.080 0 0.120 0.080 0.002 0.010 pec
+/#cylinder: 0.120 0.110 0 0.120 0.110 0.002 0.010 pec
+^two cyls one behind the other!
+/#cylinder: 0.060 0.080 0 0.060 0.080 0.002 0.010 pec
+/#cylinder: 0.180 0.080 0 0.180 0.080 0.002 0.010 pec
+^if use bottom 2 together, use 40 scans over step of 0.004
+
+/if this is on, when you run python -m tools.outputfiles_merge cylinder_Bscan_2D --remove-file, you still get left with all your .vti's
+/only use when visualizing on --geometry-only mode
+/#geometry_view: 0 0 0 0.240 0.210 0.002 0.002 0.002 0.002 70_step_behind_other n
+
+To run -n 5 times and get the scan:
+python -m gprMax single_target_70_iter.in -n 70
+python -m tools.outputfiles_merge single_target_70_iter --remove-files
+python -m tools.plot_Bscan single_target_70_iter_merged.out Ez
 
