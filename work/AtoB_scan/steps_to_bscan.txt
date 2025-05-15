@@ -162,3 +162,483 @@ To run -n 5 times and get the scan:
 python -m gprMax ascan_1m_cyl_bscan.in -n 5
 python -m tools.outputfiles_merge ascan_1m_cyl_bscan --remove-files
 python -m tools.plot_Bscan ascan_1m_cyl_bscan_merged.out Ez
+
+
+
+
+@Working run!!! Tried 10 scans at 0.04 with 0.5m away, and saw real bow, but issue is that 10 scans wasn't enough. Optimal scans would be maybe 20 iters?? Try what happens when swap
+just locations of rx and tx?@
+#title: B-scan from a metal cylinder in some sand or air
+
+
+@@ General Setup @@
+/#domain: 4.0 2.0 1.0
+#domain: 3.0 2.0 1.0
+This^ is the bounds of the sim in meters.
+
+#dx_dy_dz: 0.02 0.02 0.02
+^Discrete chunks of the sim, also in meters
+
+/#time_window: 30e-9
+#time_window: 20e-9
+In seconds of the sim^
+
+
+@@ Materials @@
+/#material: 3 0.01 1 0 my_sand
+/#material: 1 0 1 0 air 
+/#material: 6 .10 1 0 wet_asphalt
+/#material: 6 0 1 0 half_space
+^epsilon, conductivity, mu, magnetic loss, name
+
+@@ Shapes @@
+/#box: 0 0 0 3 2 1 my_sand
+/#box: 0 0 0 3 2 1 air
+#box: 0 0 0 3 2 1 free_space
+/#box: 0 0 0 2 2 1 my_sand
+^adjusted smaller box
+Makes a box of a specified material^
+
+/#sphere: 1.125 1.375 0.75 0.25 pec n
+Makes a sphere at ^ with radius of .25m of 
+a Perfect Electric Conductor and no dielectric smoothing
+
+/#cylinder: 1.250 1.000 0.200 1.250 1.000 0.700 0.500 pec n
+#cylinder: 1.650 1.000 0.200 1.650 1.000 0.700 0.050 pec n
+^half a meter attempt to see if distance attenuates too much. Inital try at .8 - 1.2 for step size of 0.04
+/#cylinder: 1.125 2.325 0.1 1.125 2.375 0.8 0.50 wet_asphalt n
+^REMEMBER any time you change radius, reposition so still 1m away or chosen distance
+
+
+@@ EM Wave stuff @@
+#waveform: ricker 1 6e8 my_pulse
+
+#hertzian_dipole: z 2.300 0.800 0.500 my_pulse     
+
+#rx: 2.300 0.600 0.500                               
+
+#src_steps: 0 0.04 0
+#rx_steps: 0 0.04 0
+% % % let's try doing 10 steps at 0.04
+Max_iters = 50, so optimal is lowest spacing of 2, then scale up for even spacing between start and end, which should be ...? 16 again? and this is not even max, because you
+could go all the way and start at .4 and .6 and end at 1.4 and 1.6 
+% % %
+
+
+/#geometry_view: 0 0 0 3 2 1 0.02 0.02 0.02 big_bscan_test n
+^adjusted for new 1m smaller domain in x direc
+^position, discretization, filename, and normal not fine so smaller filesize
+
+
+To run paraview go in terminal while in gprMax env, and go to ~/Downloads/Paraview..../bin and then use command ./paraview to open it. open another terminal if want to keep using paraview, or close and reopen after changes have been made
+
+To run -n 5 times and get the scan:
+python -m gprMax ascan_1m_cyl_bscan.in -n 5
+python -m tools.outputfiles_merge ascan_1m_cyl_bscan --remove-files
+python -m tools.plot_Bscan ascan_1m_cyl_bscan_merged.out Ez
+
+
+
+
+
+
+@@What happens if swap tx and rx? Nothing really@@
+
+#title: B-scan from a metal cylinder in some sand or air
+
+
+@@ General Setup @@
+/#domain: 4.0 2.0 1.0
+#domain: 3.0 2.0 1.0
+This^ is the bounds of the sim in meters.
+
+#dx_dy_dz: 0.02 0.02 0.02
+^Discrete chunks of the sim, also in meters
+
+/#time_window: 30e-9
+#time_window: 20e-9
+In seconds of the sim^
+
+
+@@ Materials @@
+/#material: 3 0.01 1 0 my_sand
+/#material: 1 0 1 0 air 
+/#material: 6 .10 1 0 wet_asphalt
+/#material: 6 0 1 0 half_space
+^epsilon, conductivity, mu, magnetic loss, name
+
+@@ Shapes @@
+/#box: 0 0 0 3 2 1 my_sand
+/#box: 0 0 0 3 2 1 air
+#box: 0 0 0 3 2 1 free_space
+/#box: 0 0 0 2 2 1 my_sand
+^adjusted smaller box
+Makes a box of a specified material^
+
+/#sphere: 1.125 1.375 0.75 0.25 pec n
+Makes a sphere at ^ with radius of .25m of 
+a Perfect Electric Conductor and no dielectric smoothing
+
+/#cylinder: 1.250 1.000 0.200 1.250 1.000 0.700 0.500 pec n
+#cylinder: 1.650 1.000 0.200 1.650 1.000 0.700 0.050 pec n
+^half a meter attempt to see if distance attenuates too much. Inital try at .8 - 1.2 for step size of 0.04
+/#cylinder: 1.125 2.325 0.1 1.125 2.375 0.8 0.50 wet_asphalt n
+^REMEMBER any time you change radius, reposition so still 1m away or chosen distance
+
+
+@@ EM Wave stuff @@
+#waveform: ricker 1 6e8 my_pulse
+
+/#hertzian_dipole: z 2.300 0.800 0.500 my_pulse     
+#hertzian_dipole: z 2.300 0.600 0.500 my_pulse     
+
+/#rx: 2.300 0.600 0.500                               
+#rx: 2.300 0.800 0.500                               
+
+
+
+
+
+#src_steps: 0 0.04 0
+#rx_steps: 0 0.04 0
+% % % let's try doing 10 steps at 0.04
+Max_iters = 50, so optimal is lowest spacing of 2, then scale up for even spacing between start and end, which should be ...? 16 again? and this is not even max, because you
+could go all the way and start at .4 and .6 and end at 1.4 and 1.6 
+% % %
+
+
+/#geometry_view: 0 0 0 3 2 1 0.02 0.02 0.02 big_bscan_test n
+^adjusted for new 1m smaller domain in x direc
+^position, discretization, filename, and normal not fine so smaller filesize
+
+
+
+
+
+
+
+
+To run paraview go in terminal while in gprMax env, and go to ~/Downloads/Paraview..../bin and then use command ./paraview to open it. open another terminal if want to keep using paraview, or close and reopen after changes have been made
+
+To run -n 5 times and get the scan:
+python -m gprMax ascan_1m_cyl_bscan.in -n 5
+python -m tools.outputfiles_merge ascan_1m_cyl_bscan --remove-files
+python -m tools.plot_Bscan ascan_1m_cyl_bscan_merged.out Ez
+
+
+
+
+
+
+
+
+
+
+@@@@@@WORKING RESULTS OF BSCAN!!!! At 0.5m, needs 10 scans at stepsize of 0.1m! Seems to be the bare minimum! CAN run 5 iter at 0.1m stepsize, from .7 and .9 tx rx start, but 10 
+seems to be the ultimate minimum for 0.5m!@@@@@@
+
+#title: B-scan from a metal cylinder in some sand or air
+
+
+@@ General Setup @@
+/#domain: 4.0 2.0 1.0
+#domain: 3.0 2.0 1.0
+This^ is the bounds of the sim in meters.
+
+#dx_dy_dz: 0.02 0.02 0.02
+^Discrete chunks of the sim, also in meters
+
+/#time_window: 30e-9
+#time_window: 20e-9
+In seconds of the sim^
+
+
+@@ Materials @@
+/#material: 3 0.01 1 0 my_sand
+/#material: 1 0 1 0 air 
+/#material: 6 .10 1 0 wet_asphalt
+/#material: 6 0 1 0 half_space
+^epsilon, conductivity, mu, magnetic loss, name
+
+@@ Shapes @@
+/#box: 0 0 0 3 2 1 my_sand
+/#box: 0 0 0 3 2 1 air
+#box: 0 0 0 3 2 1 free_space
+/#box: 0 0 0 2 2 1 my_sand
+^adjusted smaller box
+Makes a box of a specified material^
+
+/#sphere: 1.125 1.375 0.75 0.25 pec n
+Makes a sphere at ^ with radius of .25m of 
+a Perfect Electric Conductor and no dielectric smoothing
+
+/#cylinder: 1.250 1.000 0.200 1.250 1.000 0.700 0.500 pec n
+#cylinder: 1.650 1.000 0.200 1.650 1.000 0.700 0.050 pec n
+^half a meter attempt to see if distance attenuates too much. Inital try at .8 - 1.2 for step size of 0.04
+/#cylinder: 1.125 2.325 0.1 1.125 2.375 0.8 0.50 wet_asphalt n
+^REMEMBER any time you change radius, reposition so still 1m away or chosen distance
+
+
+@@ EM Wave stuff @@
+#waveform: ricker 1 6e8 my_pulse
+
+/#hertzian_dipole: z 2.300 0.800 0.500 my_pulse     
+#hertzian_dipole: z 2.300 0.700 0.500 my_pulse     
+
+/#rx: 2.300 0.600 0.500                               
+#rx: 2.300 0.500 0.500                               
+
+
+
+
+
+#src_steps: 0 0.1 0
+#rx_steps: 0 0.1 0
+% % % let's try doing 10 steps at 0.1m stepsize
+Max_iters = 50, so optimal is lowest spacing of 2, then scale up for even spacing between start and end, which should be ...? 16 again? and this is not even max, because you
+could go all the way and start at .4 and .6 and end at 1.4 and 1.6 
+% % %
+
+
+/#geometry_view: 0 0 0 3 2 1 0.02 0.02 0.02 big_bscan_test n
+^adjusted for new 1m smaller domain in x direc
+^position, discretization, filename, and normal not fine so smaller filesize
+
+
+
+
+
+
+
+
+To run paraview go in terminal while in gprMax env, and go to ~/Downloads/Paraview..../bin and then use command ./paraview to open it. open another terminal if want to keep using paraview, or close and reopen after changes have been made
+
+To run -n 5 times and get the scan:
+python -m gprMax ascan_1m_cyl_bscan.in -n 5
+python -m tools.outputfiles_merge ascan_1m_cyl_bscan --remove-files
+python -m tools.plot_Bscan ascan_1m_cyl_bscan_merged.out Ez
+
+
+
+
+
+
+
+@Is there a linear correlation between increasing or decreasing size and iterations required? Try 0.25m at 5 iter now that 0.5m worked at 10 iter@
+% % %Trying new idea where we save one distance of cylinder 0.25, 0.5 and 1m and test each at 5, 10 and 20 iterations% % %
+#title: B-scan from a metal cylinder in some sand or air
+
+
+@@ General Setup @@
+/#domain: 4.0 2.0 1.0
+#domain: 3.0 2.0 1.0
+This^ is the bounds of the sim in meters.
+
+#dx_dy_dz: 0.02 0.02 0.02
+^Discrete chunks of the sim, also in meters
+
+/#time_window: 30e-9
+#time_window: 20e-9
+In seconds of the sim^
+
+
+@@ Materials @@
+/#material: 3 0.01 1 0 my_sand
+/#material: 1 0 1 0 air 
+/#material: 6 .10 1 0 wet_asphalt
+/#material: 6 0 1 0 half_space
+^epsilon, conductivity, mu, magnetic loss, name
+
+@@ Shapes @@
+/#box: 0 0 0 3 2 1 my_sand
+/#box: 0 0 0 3 2 1 air
+#box: 0 0 0 3 2 1 free_space
+/#box: 0 0 0 2 2 1 my_sand
+^adjusted smaller box
+Makes a box of a specified material^
+
+/#sphere: 1.125 1.375 0.75 0.25 pec n
+Makes a sphere at ^ with radius of .25m of 
+a Perfect Electric Conductor and no dielectric smoothing
+
+/#cylinder: 1.250 1.000 0.200 1.250 1.000 0.700 0.500 pec n
+
+
+@@ Diff distance cylinders to test linear relationship @@
+% #cylinder: 0.250 1.000 0.200 0.250 1.000 0.700 0.050 pec n
+^2m??? (seems too far)
+% #cylinder: 1.250 1.000 0.200 1.250 1.000 0.700 0.050 pec n
+^1m
+% #cylinder: 1.650 1.000 0.200 1.650 1.000 0.700 0.050 pec n
+^0.5m
+#cylinder: 1.800 1.000 0.200 1.800 1.000 0.700 0.050 pec n
+^0.25m
+
+^half a meter attempt to see if distance attenuates too much. Inital try at .8 - 1.2 for step size of 0.04
+/#cylinder: 1.125 2.325 0.1 1.125 2.375 0.8 0.50 wet_asphalt n
+^REMEMBER any time you change radius, reposition so still 1m away or chosen distance
+
+
+@@ EM Wave stuff @@
+#waveform: ricker 1 6e8 my_pulse
+
+/#hertzian_dipole: z 2.300 0.800 0.500 my_pulse     
+#hertzian_dipole: z 2.300 0.900 0.500 my_pulse     
+
+/#rx: 2.300 0.600 0.500                               
+#rx: 2.300 0.700 0.500                               
+
+% % %
+When running dif iteration numbers, run rx and tx at different positions to recenter
+i.e. 10 iter start 0.5 to 1.5 (so 0.4rx and 0.6tx), 20 iter had to drop stepsize to 0.05 and ran from same location
+and for og, start 0.8 to 1.2 (so rx: 0.7 and tx: 0.9) with 0.1 stepsize
+% % %
+
+#src_steps: 0 0.1 0
+#rx_steps: 0 0.1 0
+% % % let's try doing 10 steps at 0.1m stepsize
+Max_iters = 50, so optimal is lowest spacing of 2, then scale up for even spacing between start and end, which should be ...? 16 again? and this is not even max, because you
+could go all the way and start at .4 and .6 and end at 1.4 and 1.6 
+% % %
+
+
+/#geometry_view: 0 0 0 3 2 1 0.02 0.02 0.02 big_bscan_test n
+^adjusted for new 1m smaller domain in x direc
+^position, discretization, filename, and normal not fine so smaller filesize
+
+
+
+To run paraview go in terminal while in gprMax env, and go to ~/Downloads/Paraview..../bin and then use command ./paraview to open it. open another terminal if want to keep using paraview, or close and reopen after changes have been made
+
+To run -n 5 times and get the scan:
+python -m gprMax ascan_1m_cyl_bscan.in -n 5
+python -m tools.outputfiles_merge ascan_1m_cyl_bscan --remove-files
+python -m tools.plot_Bscan ascan_1m_cyl_bscan_merged.out Ez
+
+
+%$%$%$ 
+RESULTS OF ITERATIONS VS DISTANCE TESTS:
+See "Ascan_Bscan_iters_vs_distance" directory from Screenshots where all results were taken. Notes were taken in blue notebook to recreate.
+Seems to be that 2m is too far to show up, even with 25ns window, and generally, the rule does apply that progress is linear. 
+0.25m was good at 5 iterations, while almost too good at 10 iter
+0.5m was visible at 5 iter, but needed 10, really, to be good
+1m was super light, so needed 20 iter. Maybe 15 could work, but generally more than 10!
+2m just didn't show up, which makes me wonder if I put it too far back or something, because it should've sort of shown up at 20 iter, but still nothing??
+%$%$%$ 
+
+
+
+
+
+
+%%%%%%Extra revelation: 2m works if you give it the big box and use 50cm radius cylinder. Looks about as strong as 5cm cyl at 1m!!!!!!! To scale that up would mean that you can see 
+anything that's basically a 4 or 5 ratio of distance to size (aka if 100cm/5cm = 20, or if 200/50 = 4, then 300/~300 = 1, decreasing by ratio_of_previous/4or5)?? probably bad math
+%%%%%%
+@Here's the big box 2m distance and 50cm radius cylinder:@
+
+#title: B-scan from a metal cylinder in some sand or air
+
+
+@@ General Setup @@
+#domain: 4.0 2.0 1.0
+^run big box
+/#domain: 3.0 2.0 1.0
+This^ is the bounds of the sim in meters.
+
+#dx_dy_dz: 0.02 0.02 0.02
+^Discrete chunks of the sim, also in meters
+
+/#time_window: 30e-9
+#time_window: 20e-9
+/#time_window: 25e-9
+In seconds of the sim^
+^^^^^^^^^even with big box and 2m, reflection shows up around 18ns!!!
+
+@@ Materials @@
+/#material: 3 0.01 1 0 my_sand
+/#material: 1 0 1 0 air 
+/#material: 6 .10 1 0 wet_asphalt
+/#material: 6 0 1 0 half_space
+^epsilon, conductivity, mu, magnetic loss, name
+
+@@ Shapes @@
+/#box: 0 0 0 3 2 1 my_sand
+/#box: 0 0 0 3 2 1 air
+#box: 0 0 0 3 2 1 free_space
+/#box: 0 0 0 2 2 1 my_sand
+^adjusted smaller box
+Makes a box of a specified material^
+
+/#sphere: 1.125 1.375 0.75 0.25 pec n
+Makes a sphere at ^ with radius of .25m of 
+a Perfect Electric Conductor and no dielectric smoothing
+
+/#cylinder: 1.250 1.000 0.200 1.250 1.000 0.700 0.500 pec n
+
+
+@@ Diff distance cylinders to test linear relationship @@
+@try with 5 iter on big box and 2m to see what went wrong with 2m freespace@
+#cylinder: 0.700 1.000 0.200 0.700 1.000 0.700 0.500 pec n
+^2m but 50cm radius!
+
+
+
+
+% #cylinder: 0.250 1.000 0.200 0.250 1.000 0.700 0.050 pec n
+^2m???
+% % % #cylinder: 0.250 1.000 0.200 0.250 1.000 0.700 0.050 pec n
+^1.5m???? haven't run it yet, maybe don't bother
+% #cylinder: 1.250 1.000 0.200 1.250 1.000 0.700 0.050 pec n
+^1m
+% #cylinder: 1.650 1.000 0.200 1.650 1.000 0.700 0.050 pec n
+^0.5m
+% #cylinder: 1.800 1.000 0.200 1.800 1.000 0.700 0.050 pec n
+^0.25m
+
+^half a meter attempt to see if distance attenuates too much. Inital try at .8 - 1.2 for step size of 0.04
+/#cylinder: 1.125 2.325 0.1 1.125 2.375 0.8 0.50 wet_asphalt n
+^REMEMBER any time you change radius, reposition so still 1m away or chosen distance
+
+
+@@ EM Wave stuff @@
+#waveform: ricker 1 6e8 my_pulse
+
+/#hertzian_dipole: z 2.300 0.800 0.500 my_pulse     
+/#hertzian_dipole: z 2.300 0.400 0.500 my_pulse     
+faraway>
+#hertzian_dipole: z 3.300 0.400 0.500 my_pulse     
+
+/#rx: 2.300 0.600 0.500                               
+/#rx: 2.300 0.600 0.500                               
+#rx: 3.300 0.600 0.500                               
+
+
+
+
+
+#src_steps: 0 0.1 0
+#rx_steps: 0 0.1 0
+% % % let's try doing 10 steps at 0.1m stepsize
+Max_iters = 50, so optimal is lowest spacing of 2, then scale up for even spacing between start and end, which should be ...? 16 again? and this is not even max, because you
+could go all the way and start at .4 and .6 and end at 1.4 and 1.6 
+% % %
+
+
+/#geometry_view: 0 0 0 3 2 1 0.02 0.02 0.02 big_bscan_test n
+^adjusted for new 1m smaller domain in x direc
+^position, discretization, filename, and normal not fine so smaller filesize
+/#geometry_view: 0 0 0 4 2 1 0.02 0.02 0.02 very_big4m_bscan_test n
+^when using big 4m box use this!!!!
+
+
+
+
+
+
+
+To run paraview go in terminal while in gprMax env, and go to ~/Downloads/Paraview..../bin and then use command ./paraview to open it. open another terminal if want to keep using paraview, or close and reopen after changes have been made
+
+To run -n 5 times and get the scan:
+python -m gprMax ascan_1m_cyl_bscan.in -n 5
+python -m tools.outputfiles_merge ascan_1m_cyl_bscan --remove-files
+python -m tools.plot_Bscan ascan_1m_cyl_bscan_merged.out Ez
