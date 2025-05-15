@@ -1,0 +1,164 @@
+@ @ @ Quality control till working Bscan on Big 1m out model!!! @ @ @
+
+
+@First sorta working run. Ran with 5 iter, but I think 4 could also work. Very faint reflection, but it is there!@
+#title: B-scan from a metal cylinder in some sand or air
+
+@@ General Setup @@
+/#domain: 4.0 2.0 1.0
+#domain: 3.0 2.0 1.0
+This^ is the bounds of the sim in meters.
+
+#dx_dy_dz: 0.02 0.02 0.02
+^Discrete chunks of the sim, also in meters
+
+/#time_window: 30e-9
+#time_window: 20e-9
+In seconds of the sim^
+
+@@ Materials @@
+/#material: 3 0.01 1 0 my_sand
+/#material: 1 0 1 0 air 
+/#material: 6 .10 1 0 wet_asphalt
+/#material: 6 0 1 0 half_space
+^epsilon, conductivity, mu, magnetic loss, name
+
+@@ Shapes @@
+/#box: 0 0 0 3 2 1 my_sand
+/#box: 0 0 0 3 2 1 air
+#box: 0 0 0 3 2 1 free_space
+/#box: 0 0 0 2 2 1 my_sand
+^adjusted smaller box
+Makes a box of a specified material^
+
+/#sphere: 1.125 1.375 0.75 0.25 pec n
+/#cylinder: 1.000 1.000 0.2 1.000 1.000 0.7 0.50 pec n
+^this was totally 2m away, NOT 1m, which is why our reflection came in at 15 ns not 10 like it should at 1m!!!!
+/#cylinder: 1.800 1.000 0.200 1.800 1.000 0.700 0.500 pec n
+^Cylinder centered with top and bottom coords and .5m radius, perfect electric conductor with
+ no dielectric smoothing (not far enough out to need it or with resistive enough material to pass through)
+/#cylinder: 2.250 1.000 0.200 2.250 1.000 0.700 0.050 pec n
+^clean spacing for 1/10 size at 5cm not 50
+
+#cylinder: 1.250 1.000 0.200 1.250 1.000 0.700 0.050 pec n
+^clean spacing but back a meter for smaller domain!
+/#cylinder: 1.125 2.325 0.1 1.125 2.375 0.8 0.50 wet_asphalt n
+Makes a sphere at ^ with radius of .25m of 
+a Perfect Electric Conductor and no dielectric smoothing
+^REMEMBER any time you change radius, reposition so still 1m away or chosen distance
+
+
+@@ EM Wave stuff @@
+#waveform: ricker 1 6e8 my_pulse
+
+#hertzian_dipole: z 2.300 0.800 0.500 my_pulse     
+
+#rx: 2.300 0.600 0.500                               
+
+#src_steps: 0 0.1 0
+#rx_steps: 0 0.1 0
+% % % Max_iters = 50, so optimal is lowest spacing of 2, then scale up for even spacing between start and end, which should be ...? 16 again? and this is not even max, because you
+could go all the way and start at .4 and .6 and end at 1.4 and 1.6 % % %
+
+/#geometry_view: 0 0 0 3 2 1 0.02 0.02 0.02 big_bscan_test n
+^adjusted for new 1m smaller domain in x direc
+^position, discretization, filename, and normal not fine so smaller filesize
+
+
+To run paraview go in terminal while in gprMax env, and go to ~/Downloads/Paraview..../bin and then use command ./paraview to open it. open another terminal if want to keep using paraview, or close and reopen after changes have been made
+
+To run -n 5 times and get the scan:
+python -m gprMax ascan_1m_cyl_bscan.in -n 5
+python -m tools.outputfiles_merge ascan_1m_cyl_bscan --remove-files
+python -m tools.plot_Bscan ascan_1m_cyl_bscan_merged.out Ez
+
+
+
+
+
+
+@Slightly stronger reflection when making cylinder 10x bigger at 50cm radius, covering half the total space. Why so weak??? Just natural attenuation? This is in free space!!!@
+#title: B-scan from a metal cylinder in some sand or air
+
+
+@@ General Setup @@
+/#domain: 4.0 2.0 1.0
+#domain: 3.0 2.0 1.0
+This^ is the bounds of the sim in meters.
+
+#dx_dy_dz: 0.02 0.02 0.02
+^Discrete chunks of the sim, also in meters
+
+/#time_window: 30e-9
+#time_window: 20e-9
+In seconds of the sim^
+
+
+@@ Materials @@
+/#material: 3 0.01 1 0 my_sand
+/#material: 1 0 1 0 air 
+/#material: 6 .10 1 0 wet_asphalt
+/#material: 6 0 1 0 half_space
+^epsilon, conductivity, mu, magnetic loss, name
+
+@@ Shapes @@
+/#box: 0 0 0 3 2 1 my_sand
+/#box: 0 0 0 3 2 1 air
+#box: 0 0 0 3 2 1 free_space
+/#box: 0 0 0 2 2 1 my_sand
+^adjusted smaller box
+Makes a box of a specified material^
+
+/#sphere: 1.125 1.375 0.75 0.25 pec n
+/#cylinder: 1.000 1.000 0.2 1.000 1.000 0.7 0.50 pec n
+^this was totally 2m away, NOT 1m, which is why our reflection came in at 15 ns not 10 like it should at 1m!!!!
+/#cylinder: 1.800 1.000 0.200 1.800 1.000 0.700 0.500 pec n
+^Cylinder centered with top and bottom coords and .5m radius, perfect electric conductor with
+ no dielectric smoothing (not far enough out to need it or with resistive enough material to pass through)
+/#cylinder: 2.250 1.000 0.200 2.250 1.000 0.700 0.050 pec n
+^clean spacing for 1/10 size at 5cm not 50
+
+#cylinder: 1.250 1.000 0.200 1.250 1.000 0.700 0.500 pec n
+^retry with bigger cylinder of 50 cm instead of 5
+/#cylinder: 1.250 1.000 0.200 1.250 1.000 0.700 0.050 pec n
+^clean spacing but back a meter for smaller domain!
+/#cylinder: 1.125 2.325 0.1 1.125 2.375 0.8 0.50 wet_asphalt n
+Makes a sphere at ^ with radius of .25m of 
+a Perfect Electric Conductor and no dielectric smoothing
+^REMEMBER any time you change radius, reposition so still 1m away or chosen distance
+
+
+@@ EM Wave stuff @@
+#waveform: ricker 1 6e8 my_pulse
+
+#hertzian_dipole: z 2.300 0.800 0.500 my_pulse     
+
+#rx: 2.300 0.600 0.500                               
+
+
+
+
+
+#src_steps: 0 0.1 0
+#rx_steps: 0 0.1 0
+% % % Max_iters = 50, so optimal is lowest spacing of 2, then scale up for even spacing between start and end, which should be ...? 16 again? and this is not even max, because you
+could go all the way and start at .4 and .6 and end at 1.4 and 1.6 % % %
+
+
+/#geometry_view: 0 0 0 3 2 1 0.02 0.02 0.02 big_bscan_test n
+^adjusted for new 1m smaller domain in x direc
+^position, discretization, filename, and normal not fine so smaller filesize
+
+
+
+
+
+
+
+
+To run paraview go in terminal while in gprMax env, and go to ~/Downloads/Paraview..../bin and then use command ./paraview to open it. open another terminal if want to keep using paraview, or close and reopen after changes have been made
+
+To run -n 5 times and get the scan:
+python -m gprMax ascan_1m_cyl_bscan.in -n 5
+python -m tools.outputfiles_merge ascan_1m_cyl_bscan --remove-files
+python -m tools.plot_Bscan ascan_1m_cyl_bscan_merged.out Ez
