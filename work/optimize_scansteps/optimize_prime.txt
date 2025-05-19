@@ -82,7 +82,7 @@ Answers:
 
 To run -n 5 times and get the scan:
 python -m gprMax max_steps_2mmstep.in -n 70
-python -m tools.outputfiles_merge max_steps_2mmstep remove-files
+python -m tools.outputfiles_merge max_steps_2mmstep --remove-files
 python -m tools.plot_Bscan max_steps_2mmstep_merged.out Ez
 
 

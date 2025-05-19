@@ -17,7 +17,9 @@
 #src_steps: 0.002 0 0
 /#rx_steps: 0.002 0 0
 #rx_steps: 0.004 0 0
-^testing steps 2x as big with only 25 iterations
+^testing steps 2x as big with only 25 iterations (why are we doing 40 iterations though we doubled steps? Maybe try doing 30, since .24/.002=120 and we did 60 iters?!)
+/#rx_steps: 0.008 0 0
+/^2x as big again!!! do 20 iterations
 
 #box: 0 0 0 0.240 0.170 0.002 half_space
 /#cylinder: 0.120 0.080 0 0.120 0.080 0.002 0.010 pec

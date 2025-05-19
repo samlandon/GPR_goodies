@@ -9,8 +9,8 @@ This^ is the bounds of the sim in meters.
 #dx_dy_dz: 0.02 0.02 0.02
 ^Discrete chunks of the sim, also in meters
 
-#time_window: 30e-9
-/#time_window: 20e-9
+/#time_window: 30e-9
+#time_window: 20e-9
 In seconds of the sim^
 
 
